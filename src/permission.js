@@ -6,7 +6,7 @@ import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/home', '/table'] // no redirect whitelist
+const whiteList = ['/login', '/home', '/table', '/bpmn', '/bpmn/designer'] // no redirect whitelist
 
 router.beforeEach(async (to, from, next) => {
   // start progress bar
@@ -52,7 +52,8 @@ router.beforeEach(async (to, from, next) => {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`)
+      // next(`/login?redirect=${to.path}`)
+      next()
       NProgress.done()
     }
   }

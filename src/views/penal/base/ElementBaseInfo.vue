@@ -6,7 +6,7 @@ const props = defineProps({
   type: String,
   idEditDisabled: {
     type: Boolean,
-    default: true
+    default: false
   }
 })
 

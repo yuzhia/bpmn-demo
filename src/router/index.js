@@ -4,13 +4,19 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/bpmn'
   },
   {
-    path: '/home',
-    name: 'home',
-    component: () => import('@/views/Home.vue'),
+    path: '/bpmn',
+    name: 'bpmn',
+    component: () => import('@/views/table.vue'),
     meta: { title: '首页' }
+  },
+  {
+    path: '/bpmn/designer/:id',
+    name: 'designer',
+    component: () => import('@/views/designer/index.vue'),
+    meta: { title: '设计流程' }
   },
   {
     path: '/table',

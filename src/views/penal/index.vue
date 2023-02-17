@@ -2,13 +2,17 @@
 import { ref } from 'vue'
 import ElementBaseInfo from './base/ElementBaseInfo.vue'
 import SignalAndMessage from './signal-message/SignalAndMessage.vue'
+import ElementListeners from './listeners/ElementListeners.vue'
+import ElementProperties from './properties/ElementProperties.vue'
+import ElementTask from './task/ElementTask.vue'
+import ElementMultiInstance from './multi-instance/ElementMultiInstance.vue'
 
 const props = defineProps({
   bpmnModeler: Object,
   width: String,
   idEditDisabled: {
     type: Boolean,
-    default: false
+    default: true
   }
 })
 
@@ -39,7 +43,7 @@ const initModels = () => {
     replace: props.bpmnModeler.get('replace'),
     selection: props.bpmnModeler.get('selection')
   }
-  console.log(window.bpmnInstances)
+  // console.log(window.bpmnInstances)
   getActiveElement()
 }
 
@@ -77,7 +81,7 @@ const initFormOnChanged = element => {
   console.log(
     `select element changed: id: ${activatedElement.id} , type: ${activatedElement.businessObject.$type}`
   )
-  console.log('businessObject', activatedElement.businessObject)
+  // console.log('businessObject', activatedElement.businessObject)
   window.bpmnInstances.bpmnElement = activatedElement
   // this.bpmnElement = activatedElement
   elementId.value = activatedElement.id
@@ -103,7 +107,7 @@ initModels()
       <el-collapse-item name="base">
         <template #title>
           <div class="panel-tab__title">
-            <el-icon><i-ep-info-filled /></el-icon>常规
+            <el-icon class="mr-2"><i-ep-info-filled /></el-icon>常规
           </div>
         </template>
         <element-base-info
@@ -112,19 +116,73 @@ initModels()
           :type="elementType"
         />
       </el-collapse-item>
-
+      <el-collapse-item
+        name="task"
+        v-if="elementType.indexOf('Task') !== -1"
+        key="task"
+      >
+        <template #title>
+          <div class="panel-tab__title">
+            <el-icon class="mr-2"><i-ep-checked /></el-icon>任务
+          </div>
+        </template>
+        <element-task :id="elementId" :type="elementType" />
+      </el-collapse-item>
+      <el-collapse-item
+        name="multiInstance"
+        v-if="elementType.indexOf('Task') !== -1"
+        key="multiInstance"
+      >
+        <template #title>
+          <div class="panel-tab__title">
+            <el-icon class="mr-2"><i-ep-help-filled /></el-icon>多实例
+          </div>
+        </template>
+        <element-multi-instance
+          :business-object="elementBusinessObject"
+          :type="elementType"
+        />
+      </el-collapse-item>
+      <!-- <el-collapse-item
+        name="taskListeners"
+        v-if="elementType === 'UserTask'"
+        key="taskListeners"
+      >
+        <template #title>
+          <div class="panel-tab__title">
+            <el-icon class="mr-2"><i-ep-bell-filled /></el-icon>任务监听器
+          </div>
+        </template>
+        <user-task-listeners :id="elementId" :type="elementType" />
+      </el-collapse-item> -->
+      <el-collapse-item name="listeners" key="listeners">
+        <template #title>
+          <div class="panel-tab__title">
+            <el-icon class="mr-2"><i-ep-bell-filled /></el-icon>执行监听器
+          </div>
+        </template>
+        <element-listeners :id="elementId" :type="elementType" />
+      </el-collapse-item>
       <el-collapse-item name="condition" key="message">
         <template #title>
           <div class="panel-tab__title">
-            <el-icon><i-ep-comment /></el-icon>消息与信号
+            <el-icon class="mr-2"><i-ep-comment /></el-icon>消息与信号
           </div>
         </template>
         <signal-and-message />
       </el-collapse-item>
+      <el-collapse-item name="extensions" key="extensions">
+        <template #title>
+          <div class="panel-tab__title">
+            <el-icon class="mr-2"><i-ep-circle-plus /></el-icon>扩展属性
+          </div>
+        </template>
+        <element-properties :id="elementId" :type="elementType" />
+      </el-collapse-item>
       <el-collapse-item name="other" key="other">
         <template #title>
           <div class="panel-tab__title">
-            <el-icon><i-ep-promotion /></el-icon>其他
+            <el-icon class="mr-2"><i-ep-promotion /></el-icon>其他
           </div>
         </template>
         <div class="px-4 py-2">
@@ -153,6 +211,13 @@ initModels()
   box-shadow: 0 0 8px #cccccc;
   max-height: 100%;
   overflow-y: scroll;
+}
+
+.panel-tab__content {
+  width: 100%;
+  box-sizing: border-box;
+  border-top: 1px solid #eeeeee;
+  padding: 8px 16px;
 }
 .panel-tab__title {
   font-weight: 600;
