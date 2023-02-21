@@ -18,6 +18,8 @@ import 'codemirror/mode/xml/xml.js'
 
 import { useRoute } from 'vue-router'
 
+import { getWorkFlow, updateWorkFlow } from '@/api/workFlow.js'
+
 const route = useRoute()
 
 const getBpmnByModelId = () => {
@@ -45,7 +47,7 @@ const props = defineProps({
   options: {
     type: Object,
     default: () => ({})
-  }, // 自定义的翻译文件
+  },
   additionalModel: [Object, Array], // 自定义model
   moddleExtension: Object, // 自定义moddle
   onlyCustomizeAddi: {
@@ -75,16 +77,12 @@ const props = defineProps({
   headerButtonSize: {
     type: String,
     default: 'small',
-    validator: value =>
-      ['default', 'medium', 'small', 'mini'].indexOf(value) !== -1
+    validator: value => ['default', 'medium', 'small', 'mini'].indexOf(value) !== -1
   },
   headerButtonType: {
     type: String,
     default: 'primary',
-    validator: value =>
-      ['default', 'primary', 'success', 'warning', 'danger', 'info'].indexOf(
-        value
-      ) !== -1
+    validator: value => ['default', 'primary', 'success', 'warning', 'danger', 'info'].indexOf(value) !== -1
   }
 })
 
@@ -197,9 +195,7 @@ const setEncoded = (type, filename = 'diagram', data) => {
   const encodedData = encodeURIComponent(data)
   return {
     filename: `${filename}.${type}`,
-    href: `data:application/${
-      type === 'svg' ? 'text/xml' : 'bpmn20-xml'
-    };charset=UTF-8,${encodedData}`,
+    href: `data:application/${type === 'svg' ? 'text/xml' : 'bpmn20-xml'};charset=UTF-8,${encodedData}`,
     data: data
   }
 }
@@ -245,9 +241,7 @@ const elementsAlign = align => {
 const processZoomIn = (zoomStep = 0.1) => {
   let newZoom = Math.floor(defaultZoom.value * 100 + zoomStep * 100) / 100
   if (newZoom > 4) {
-    throw new Error(
-      '[Process Designer Warn ]: The zoom ratio cannot be greater than 4'
-    )
+    throw new Error('[Process Designer Warn ]: The zoom ratio cannot be greater than 4')
   }
   defaultZoom.value = newZoom
   bpmnModeler.value.get('canvas').zoom(defaultZoom.value)
@@ -255,23 +249,17 @@ const processZoomIn = (zoomStep = 0.1) => {
 const processZoomOut = (zoomStep = 0.1) => {
   let newZoom = Math.floor(defaultZoom.value * 100 - zoomStep * 100) / 100
   if (newZoom < 0.2) {
-    throw new Error(
-      '[Process Designer Warn ]: The zoom ratio cannot be less than 0.2'
-    )
+    throw new Error('[Process Designer Warn ]: The zoom ratio cannot be less than 0.2')
   }
   defaultZoom.value = newZoom
   bpmnModeler.value.get('canvas').zoom(defaultZoom.value)
 }
 const processZoomTo = (newZoom = 1) => {
   if (newZoom < 0.2) {
-    throw new Error(
-      '[Process Designer Warn ]: The zoom ratio cannot be less than 0.2'
-    )
+    throw new Error('[Process Designer Warn ]: The zoom ratio cannot be less than 0.2')
   }
   if (newZoom > 4) {
-    throw new Error(
-      '[Process Designer Warn ]: The zoom ratio cannot be greater than 4'
-    )
+    throw new Error('[Process Designer Warn ]: The zoom ratio cannot be greater than 4')
   }
   defaultZoom.value = newZoom
   bpmnModeler.value.get('canvas').zoom(newZoom)
@@ -293,6 +281,17 @@ const processRestart = () => {
   revocable.value = false
   createNewDiagram(null)
 }
+
+const workFlow = ref({})
+const saveXML = () => {
+  getWorkFlow(route.params.id).then(res => {
+    workFlow.value = res.data
+  })
+  bpmnModeler.value.saveXML({ format: false }).then(({ xml }) => {
+    workFlow.value.xmlFile = xml
+    updateWorkFlow(workFlow.value)
+  })
+}
 </script>
 
 <template>
@@ -301,55 +300,30 @@ const processRestart = () => {
     <div class="w-full min-h-9 flex items-center">
       <slot name="control-header"></slot>
       <template v-if="!$slots['control-header']">
+        <el-button :size="headerButtonSize" :type="headerButtonType" @click="saveXML">
+          <i-ep-folder-opened />保存
+        </el-button>
         <el-button-group key="file-control" class="m-1">
-          <el-button
-            :size="headerButtonSize"
-            :type="headerButtonType"
-            @click="refFile.click()"
-          >
+          <el-button :size="headerButtonSize" :type="headerButtonType" @click="refFile.click()">
             <i-ep-folder-opened />打开文件
           </el-button>
           <el-tooltip effect="light">
             <template #content>
-              <el-button
-                :size="headerButtonSize"
-                text
-                @click="downloadProcess('xml')"
-                >下载为XML文件</el-button
-              >
+              <el-button :size="headerButtonSize" text @click="downloadProcess('xml')">下载为XML文件</el-button>
               <br />
-              <el-button
-                :size="headerButtonSize"
-                text
-                @click="downloadProcess('svg')"
-                >下载为SVG文件</el-button
-              >
+              <el-button :size="headerButtonSize" text @click="downloadProcess('svg')">下载为SVG文件</el-button>
               <br />
-              <el-button
-                :size="headerButtonSize"
-                text
-                @click="downloadProcess('bpmn')"
-                >下载为BPMN文件</el-button
-              >
+              <el-button :size="headerButtonSize" text @click="downloadProcess('bpmn')">下载为BPMN文件</el-button>
             </template>
-            <el-button :size="headerButtonSize" :type="headerButtonType">
-              <i-ep-download />下载文件</el-button
-            >
+            <el-button :size="headerButtonSize" :type="headerButtonType"> <i-ep-download />下载文件</el-button>
           </el-tooltip>
           <el-tooltip effect="light">
             <template #content>
-              <el-button
-                :size="headerButtonSize"
-                text
-                @click="previewProcessXML"
-                >预览XML</el-button
-              >
+              <el-button :size="headerButtonSize" text @click="previewProcessXML">预览XML</el-button>
               <br />
               <!-- <el-button :size="headerButtonSize" text @click="previewProcessJson">预览JSON</el-button> -->
             </template>
-            <el-button :size="headerButtonSize" :type="headerButtonType">
-              <i-ep-view />预览</el-button
-            >
+            <el-button :size="headerButtonSize" :type="headerButtonType"> <i-ep-view />预览</el-button>
           </el-tooltip>
           <!-- <el-tooltip
             v-if="simulation"
@@ -382,50 +356,30 @@ const processRestart = () => {
             </el-button>
           </el-tooltip>
           <el-tooltip effect="light" content="向下对齐">
-            <el-button
-              :size="headerButtonSize"
-              @click="elementsAlign('bottom')"
-            >
+            <el-button :size="headerButtonSize" @click="elementsAlign('bottom')">
               <i-ep-histogram class="transform rotate-0" />
             </el-button>
           </el-tooltip>
           <el-tooltip effect="light" content="水平居中">
-            <el-button
-              :size="headerButtonSize"
-              @click="elementsAlign('center')"
-            >
+            <el-button :size="headerButtonSize" @click="elementsAlign('center')">
               <i-ep-histogram class="align align-center" />
             </el-button>
           </el-tooltip>
           <el-tooltip effect="light" content="垂直居中">
-            <el-button
-              :size="headerButtonSize"
-              @click="elementsAlign('middle')"
-              class="align"
-            >
+            <el-button :size="headerButtonSize" @click="elementsAlign('middle')" class="align">
               <i-ep-histogram class="middle" />
             </el-button>
           </el-tooltip>
         </el-button-group>
         <el-button-group key="scale-control" class="m-1">
           <el-tooltip effect="light" content="缩小视图">
-            <el-button
-              :size="headerButtonSize"
-              :disabled="defaultZoom < 0.2"
-              @click="processZoomOut()"
-            >
+            <el-button :size="headerButtonSize" :disabled="defaultZoom < 0.2" @click="processZoomOut()">
               <i-ep-zoom-out />
             </el-button>
           </el-tooltip>
-          <el-button :size="headerButtonSize">{{
-            Math.floor(defaultZoom * 10 * 10) + '%'
-          }}</el-button>
+          <el-button :size="headerButtonSize">{{ Math.floor(defaultZoom * 10 * 10) + '%' }}</el-button>
           <el-tooltip effect="light" content="放大视图">
-            <el-button
-              :size="headerButtonSize"
-              :disabled="defaultZoom > 4"
-              @click="processZoomIn()"
-            >
+            <el-button :size="headerButtonSize" :disabled="defaultZoom > 4" @click="processZoomIn()">
               <i-ep-zoom-in />
             </el-button>
           </el-tooltip>
@@ -437,20 +391,12 @@ const processRestart = () => {
         </el-button-group>
         <el-button-group key="stack-control" class="m-1">
           <el-tooltip effect="light" content="撤销">
-            <el-button
-              :size="headerButtonSize"
-              :disabled="!revocable"
-              @click="processUndo()"
-            >
+            <el-button :size="headerButtonSize" :disabled="!revocable" @click="processUndo()">
               <i-ep-refresh-left />
             </el-button>
           </el-tooltip>
           <el-tooltip effect="light" content="恢复">
-            <el-button
-              :size="headerButtonSize"
-              :disabled="!recoverable"
-              @click="processRedo()"
-            >
+            <el-button :size="headerButtonSize" :disabled="!recoverable" @click="processRedo()">
               <i-ep-refresh-right />
             </el-button>
           </el-tooltip>
@@ -478,19 +424,8 @@ const processRestart = () => {
     </div>
 
     <!-- 预览  -->
-    <el-dialog
-      :title="`预览${previewType}`"
-      width="60%"
-      v-model="previewModelVisible"
-      append-to-body
-      destroy-on-close
-    >
-      <Codemirror
-        v-model:value="previewResult"
-        :options="cmOptions"
-        border
-        :height="600"
-      />
+    <el-dialog :title="`预览${previewType}`" width="60%" v-model="previewModelVisible" append-to-body destroy-on-close>
+      <Codemirror v-model:value="previewResult" :options="cmOptions" border :height="600" />
     </el-dialog>
   </div>
 </template>

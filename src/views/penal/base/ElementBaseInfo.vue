@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, onBeforeUnmount } from 'vue'
 
 const props = defineProps({
   businessObject: Object,
@@ -11,6 +11,7 @@ const props = defineProps({
 })
 
 const elementBaseInfo = ref({})
+let bpmnElement
 
 watch(
   () => props.businessObject,
@@ -22,18 +23,14 @@ watch(
 )
 
 const resetBaseInfo = () => {
-  const bpmnElement = window?.bpmnInstances?.bpmnElement || {}
+  bpmnElement = window?.bpmnInstances?.bpmnElement || {}
   elementBaseInfo.value = JSON.parse(JSON.stringify(bpmnElement.businessObject))
-  if (
-    elementBaseInfo.value &&
-    elementBaseInfo.value.$type === 'bpmn:SubProcess'
-  ) {
+  if (elementBaseInfo.value && elementBaseInfo.value.$type === 'bpmn:SubProcess') {
     elementBaseInfo.value['isExpanded'] = elementBaseInfo.value.di?.isExpanded
   }
 }
 
 const updateBaseInfo = key => {
-  const bpmnElement = window?.bpmnInstances?.bpmnElement || {}
   if (key === 'id') {
     window.bpmnInstances.modeling.updateProperties(bpmnElement, {
       id: elementBaseInfo.value[key],
@@ -49,34 +46,25 @@ const updateBaseInfo = key => {
   attrObj[key] = elementBaseInfo.value[key]
   window.bpmnInstances.modeling.updateProperties(bpmnElement, attrObj)
 }
+
+onBeforeUnmount(() => {
+  bpmnElement = null
+})
 </script>
 
 <template>
   <div class="panel-tab__content w-120">
     <el-form size="small" label-width="90px" @submit.prevent>
       <el-form-item label="ID">
-        <el-input
-          v-model="elementBaseInfo.id"
-          :disabled="idEditDisabled"
-          clearable
-          @change="updateBaseInfo('id')"
-        />
+        <el-input v-model="elementBaseInfo.id" :disabled="idEditDisabled" clearable @change="updateBaseInfo('id')" />
       </el-form-item>
       <el-form-item label="名称">
-        <el-input
-          v-model="elementBaseInfo.name"
-          clearable
-          @change="updateBaseInfo('name')"
-        />
+        <el-input v-model="elementBaseInfo.name" clearable @change="updateBaseInfo('name')" />
       </el-form-item>
       <!--流程的基础属性-->
       <template v-if="elementBaseInfo.$type === 'bpmn:Process'">
         <el-form-item label="版本标签">
-          <el-input
-            v-model="elementBaseInfo.versionTag"
-            clearable
-            @change="updateBaseInfo('versionTag')"
-          />
+          <el-input v-model="elementBaseInfo.versionTag" clearable @change="updateBaseInfo('versionTag')" />
         </el-form-item>
         <el-form-item label="可执行">
           <el-switch
@@ -87,10 +75,7 @@ const updateBaseInfo = key => {
           />
         </el-form-item>
       </template>
-      <el-form-item
-        v-if="elementBaseInfo.$type === 'bpmn:SubProcess'"
-        label="状态"
-      >
+      <el-form-item v-if="elementBaseInfo.$type === 'bpmn:SubProcess'" label="状态">
         <el-switch
           v-model="elementBaseInfo.isExpanded"
           active-text="展开"

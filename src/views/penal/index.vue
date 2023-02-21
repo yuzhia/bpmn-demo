@@ -6,6 +6,7 @@ import ElementListeners from './listeners/ElementListeners.vue'
 import ElementProperties from './properties/ElementProperties.vue'
 import ElementTask from './task/ElementTask.vue'
 import ElementMultiInstance from './multi-instance/ElementMultiInstance.vue'
+import FlowCondition from './flow-condition/FlowCondition.vue'
 
 const props = defineProps({
   bpmnModeler: Object,
@@ -68,34 +69,25 @@ const getActiveElement = () => {
 // 初始化数据
 const initFormOnChanged = element => {
   let activatedElement = element
+  // 没有选择元素
   if (!activatedElement) {
     activatedElement =
-      window.bpmnInstances.elementRegistry.find(
-        el => el.type === 'bpmn:Process'
-      ) ??
-      window.bpmnInstances.elementRegistry.find(
-        el => el.type === 'bpmn:Collaboration'
-      )
+      window.bpmnInstances.elementRegistry.find(el => el.type === 'bpmn:Process') ??
+      window.bpmnInstances.elementRegistry.find(el => el.type === 'bpmn:Collaboration')
   }
   if (!activatedElement) return
-  console.log(
-    `select element changed: id: ${activatedElement.id} , type: ${activatedElement.businessObject.$type}`
-  )
-  // console.log('businessObject', activatedElement.businessObject)
+  console.log(`select element changed: id: ${activatedElement.id} , type: ${activatedElement.businessObject.$type}`)
+  // 全局设置当前激活元素
   window.bpmnInstances.bpmnElement = activatedElement
-  // this.bpmnElement = activatedElement
   elementId.value = activatedElement.id
   elementType.value = activatedElement.type.split(':')[1] || ''
-  elementBusinessObject.value = JSON.parse(
-    JSON.stringify(activatedElement.businessObject)
-  )
+  elementBusinessObject.value = JSON.parse(JSON.stringify(activatedElement.businessObject))
   conditionFormVisible.value = !!(
     elementType.value === 'SequenceFlow' &&
     activatedElement.source &&
     activatedElement.source.type.indexOf('StartEvent') === -1
   )
-  formVisible.value =
-    elementType.value === 'UserTask' || elementType.value === 'StartEvent'
+  formVisible.value = elementType.value === 'UserTask' || elementType.value === 'StartEvent'
 }
 
 initModels()
@@ -116,11 +108,7 @@ initModels()
           :type="elementType"
         />
       </el-collapse-item>
-      <el-collapse-item
-        name="task"
-        v-if="elementType.indexOf('Task') !== -1"
-        key="task"
-      >
+      <el-collapse-item name="task" v-if="elementType.indexOf('Task') !== -1" key="task">
         <template #title>
           <div class="panel-tab__title">
             <el-icon class="mr-2"><i-ep-checked /></el-icon>任务
@@ -128,20 +116,13 @@ initModels()
         </template>
         <element-task :id="elementId" :type="elementType" />
       </el-collapse-item>
-      <el-collapse-item
-        name="multiInstance"
-        v-if="elementType.indexOf('Task') !== -1"
-        key="multiInstance"
-      >
+      <el-collapse-item name="multiInstance" v-if="elementType.indexOf('Task') !== -1" key="multiInstance">
         <template #title>
           <div class="panel-tab__title">
             <el-icon class="mr-2"><i-ep-help-filled /></el-icon>多实例
           </div>
         </template>
-        <element-multi-instance
-          :business-object="elementBusinessObject"
-          :type="elementType"
-        />
+        <element-multi-instance :business-object="elementBusinessObject" :type="elementType" />
       </el-collapse-item>
       <!-- <el-collapse-item
         name="taskListeners"
@@ -163,7 +144,15 @@ initModels()
         </template>
         <element-listeners :id="elementId" :type="elementType" />
       </el-collapse-item>
-      <el-collapse-item name="condition" key="message">
+      <el-collapse-item name="condition" v-if="conditionFormVisible" key="condition">
+        <template #title>
+          <div class="panel-tab__title">
+            <el-icon class="mr-2"><i-ep-promotion /></el-icon>流转条件
+          </div>
+        </template>
+        <flow-condition :business-object="elementBusinessObject" :type="elementType" />
+      </el-collapse-item>
+      <el-collapse-item name="condition" v-if="elementType === 'Process'" key="message">
         <template #title>
           <div class="panel-tab__title">
             <el-icon class="mr-2"><i-ep-comment /></el-icon>消息与信号
@@ -189,12 +178,7 @@ initModels()
           <div class="flex">
             <div class="element-property__label">元素文档：</div>
             <div class="flex-1">
-              <el-input
-                type="textarea"
-                size="small"
-                resize="vertical"
-                :autosize="{ minRows: 2, maxRows: 4 }"
-              />
+              <el-input type="textarea" size="small" resize="vertical" :autosize="{ minRows: 2, maxRows: 4 }" />
             </div>
           </div>
         </div>

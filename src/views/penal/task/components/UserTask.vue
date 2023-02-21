@@ -6,12 +6,22 @@
       </el-select>
     </el-form-item>
     <el-form-item label="候选用户">
-      <el-select v-model="userTaskForm.candidateUsers" multiple collapse-tags @change="updateElementTask('candidateUsers')">
+      <el-select
+        v-model="userTaskForm.candidateUsers"
+        multiple
+        collapse-tags
+        @change="updateElementTask('candidateUsers')"
+      >
         <el-option v-for="uk in mockData" :key="'user-' + uk" :label="`用户${uk}`" :value="`user${uk}`" />
       </el-select>
     </el-form-item>
     <el-form-item label="候选分组">
-      <el-select v-model="userTaskForm.candidateGroups" multiple collapse-tags @change="updateElementTask('candidateGroups')">
+      <el-select
+        v-model="userTaskForm.candidateGroups"
+        multiple
+        collapse-tags
+        @change="updateElementTask('candidateGroups')"
+      >
         <el-option v-for="gk in mockData" :key="'ass-' + gk" :label="`分组${gk}`" :value="`group${gk}`" />
       </el-select>
     </el-form-item>
@@ -29,7 +39,7 @@
 
 <script>
 export default {
-  name: "UserTask",
+  name: 'UserTask',
   props: {
     id: String,
     type: String
@@ -37,50 +47,50 @@ export default {
   data() {
     return {
       defaultTaskForm: {
-        assignee: "",
+        assignee: '',
         candidateUsers: [],
         candidateGroups: [],
-        dueDate: "",
-        followUpDate: "",
-        priority: ""
+        dueDate: '',
+        followUpDate: '',
+        priority: ''
       },
       userTaskForm: {},
       mockData: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    };
+    }
   },
   watch: {
     id: {
       immediate: true,
       handler() {
-        this.bpmnElement = window.bpmnInstances.bpmnElement;
-        this.$nextTick(() => this.resetTaskForm());
+        this.bpmnElement = window.bpmnInstances.bpmnElement
+        this.$nextTick(() => this.resetTaskForm())
       }
     }
   },
   methods: {
     resetTaskForm() {
       for (let key in this.defaultTaskForm) {
-        let value;
-        if (key === "candidateUsers" || key === "candidateGroups") {
-          value = this.bpmnElement?.businessObject[key] ? this.bpmnElement.businessObject[key].split(",") : [];
+        let value
+        if (key === 'candidateUsers' || key === 'candidateGroups') {
+          value = this.bpmnElement?.businessObject[key] ? this.bpmnElement.businessObject[key].split(',') : []
         } else {
-          value = this.bpmnElement?.businessObject[key] || this.defaultTaskForm[key];
+          value = this.bpmnElement?.businessObject[key] || this.defaultTaskForm[key]
         }
         this.userTaskForm[key] = value
       }
     },
     updateElementTask(key) {
-      const taskAttr = Object.create(null);
-      if (key === "candidateUsers" || key === "candidateGroups") {
-        taskAttr[key] = this.userTaskForm[key] && this.userTaskForm[key].length ? this.userTaskForm[key].join() : null;
+      const taskAttr = Object.create(null)
+      if (key === 'candidateUsers' || key === 'candidateGroups') {
+        taskAttr[key] = this.userTaskForm[key] && this.userTaskForm[key].length ? this.userTaskForm[key].join() : null
       } else {
-        taskAttr[key] = this.userTaskForm[key] || null;
+        taskAttr[key] = this.userTaskForm[key] || null
       }
-      window.bpmnInstances.modeling.updateProperties(this.bpmnElement, taskAttr);
+      window.bpmnInstances.modeling.updateProperties(this.bpmnElement, taskAttr)
     }
   },
   beforeUnmount() {
-    this.bpmnElement = null;
+    this.bpmnElement = null
   }
-};
+}
 </script>

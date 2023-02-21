@@ -22,7 +22,7 @@ export default () => {
       open: false,
       proxy: {
         '/dev-api': {
-          target: 'http://localhost:8080',
+          target: 'http://localhost',
           changeOrigin: true,
           rewrite: path => path.replace(/^\/dev-api/, '')
         }

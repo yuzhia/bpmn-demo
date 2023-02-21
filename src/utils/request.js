@@ -13,9 +13,10 @@ const service = axios.create({
 
 service.interceptors.request.use(
   config => {
-    if (userStore.getterToken) {
-      config.headers['Authorization'] = getToken()
-    }
+    // if (userStore.getterToken) {
+    //   config.headers['Authorization'] = getToken()
+    // }
+    config.headers['Cookie'] = 'JSESSIONID=15590A6FA358E72A1DF23F248B43864D'
     return config
   },
   error => {
