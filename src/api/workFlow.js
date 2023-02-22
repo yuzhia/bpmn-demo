@@ -25,8 +25,9 @@ export const listWorkFlow = () => {
 
 export const getWorkFlow = id => {
   return request({
-    url: `/workFlow/get/${id}`,
-    method: 'get'
+    url: `/workFlow/get`,
+    method: 'get',
+    params: { id }
   })
 }
 

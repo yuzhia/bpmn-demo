@@ -24,19 +24,20 @@ const route = useRoute()
 
 const getBpmnByModelId = () => {
   // route.params.id
-  const json = {
-    id: null,
-    modelId: '8e9e9e4dae5b11ed8d81165d76b7fc42',
-    modelKey: 'ninhao',
-    modelName: '你好',
-    fileName: '你好',
-    modelXml:
-      '<?xml version="1.0" encoding="UTF-8"?>\n<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://flowable.org/modeler" exporter="Flowable Open Source Modeler" exporterVersion="1.1.1-SNAPSHOT">\n  <process id="ninhao" name="你好" isExecutable="true">\n    <startEvent id="startEvent1"></startEvent>\n    <exclusiveGateway id="Gateway_0ze8g5u"></exclusiveGateway>\n    <sequenceFlow id="Flow_0u965i4" sourceRef="startEvent1" targetRef="Gateway_0ze8g5u"></sequenceFlow>\n    <userTask id="Activity_07ki0up">\n      <extensionElements>\n        <flowable:assigneeType xmlns:flowable="http://flowable.org/bpmn"><![CDATA[static]]></flowable:assigneeType>\n      </extensionElements>\n    </userTask>\n    <sequenceFlow id="Flow_0n6xony" sourceRef="Gateway_0ze8g5u" targetRef="Activity_07ki0up"></sequenceFlow>\n  </process>\n  <bpmndi:BPMNDiagram id="BPMNDiagram_ninhao">\n    <bpmndi:BPMNPlane bpmnElement="ninhao" id="BPMNPlane_ninhao">\n      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">\n        <omgdc:Bounds height="30.0" width="30.0" x="-195.0" y="195.0"></omgdc:Bounds>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape bpmnElement="Gateway_0ze8g5u" id="BPMNShape_Gateway_0ze8g5u">\n        <omgdc:Bounds height="50.0" width="50.0" x="15.0" y="265.0"></omgdc:Bounds>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape bpmnElement="Activity_07ki0up" id="BPMNShape_Activity_07ki0up">\n        <omgdc:Bounds height="80.0" width="100.0" x="330.0" y="200.0"></omgdc:Bounds>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge bpmnElement="Flow_0u965i4" id="BPMNEdge_Flow_0u965i4" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="25.0" flowable:targetDockerY="25.0">\n        <omgdi:waypoint x="-165.05000037768568" y="210.0"></omgdi:waypoint>\n        <omgdi:waypoint x="40.0" y="210.0"></omgdi:waypoint>\n        <omgdi:waypoint x="40.0" y="265.0"></omgdi:waypoint>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge bpmnElement="Flow_0n6xony" id="BPMNEdge_Flow_0n6xony" flowable:sourceDockerX="25.0" flowable:sourceDockerY="25.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">\n        <omgdi:waypoint x="64.94279318311472" y="290.0"></omgdi:waypoint>\n        <omgdi:waypoint x="213.0" y="290.0"></omgdi:waypoint>\n        <omgdi:waypoint x="213.0" y="240.0"></omgdi:waypoint>\n        <omgdi:waypoint x="330.0" y="240.0"></omgdi:waypoint>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</definitions>',
-    appSn: null,
-    categoryCode: null
-  }
-  bpmnData.value = json
-  console.log('bpmnData', bpmnData.value)
+  // const json = {
+  //   id: null,
+  //   modelId: '8e9e9e4dae5b11ed8d81165d76b7fc42',
+  //   modelKey: 'ninhao',
+  //   modelName: '你好',
+  //   fileName: '你好',
+  //   modelXml:
+  //     '<?xml version="1.0" encoding="UTF-8"?>\n<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://flowable.org/modeler" exporter="Flowable Open Source Modeler" exporterVersion="1.1.1-SNAPSHOT">\n  <process id="ninhao" name="你好" isExecutable="true">\n    <startEvent id="startEvent1"></startEvent>\n    <exclusiveGateway id="Gateway_0ze8g5u"></exclusiveGateway>\n    <sequenceFlow id="Flow_0u965i4" sourceRef="startEvent1" targetRef="Gateway_0ze8g5u"></sequenceFlow>\n    <userTask id="Activity_07ki0up">\n      <extensionElements>\n        <flowable:assigneeType xmlns:flowable="http://flowable.org/bpmn"><![CDATA[static]]></flowable:assigneeType>\n      </extensionElements>\n    </userTask>\n    <sequenceFlow id="Flow_0n6xony" sourceRef="Gateway_0ze8g5u" targetRef="Activity_07ki0up"></sequenceFlow>\n  </process>\n  <bpmndi:BPMNDiagram id="BPMNDiagram_ninhao">\n    <bpmndi:BPMNPlane bpmnElement="ninhao" id="BPMNPlane_ninhao">\n      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">\n        <omgdc:Bounds height="30.0" width="30.0" x="-195.0" y="195.0"></omgdc:Bounds>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape bpmnElement="Gateway_0ze8g5u" id="BPMNShape_Gateway_0ze8g5u">\n        <omgdc:Bounds height="50.0" width="50.0" x="15.0" y="265.0"></omgdc:Bounds>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape bpmnElement="Activity_07ki0up" id="BPMNShape_Activity_07ki0up">\n        <omgdc:Bounds height="80.0" width="100.0" x="330.0" y="200.0"></omgdc:Bounds>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge bpmnElement="Flow_0u965i4" id="BPMNEdge_Flow_0u965i4" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.0" flowable:targetDockerX="25.0" flowable:targetDockerY="25.0">\n        <omgdi:waypoint x="-165.05000037768568" y="210.0"></omgdi:waypoint>\n        <omgdi:waypoint x="40.0" y="210.0"></omgdi:waypoint>\n        <omgdi:waypoint x="40.0" y="265.0"></omgdi:waypoint>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge bpmnElement="Flow_0n6xony" id="BPMNEdge_Flow_0n6xony" flowable:sourceDockerX="25.0" flowable:sourceDockerY="25.0" flowable:targetDockerX="50.0" flowable:targetDockerY="40.0">\n        <omgdi:waypoint x="64.94279318311472" y="290.0"></omgdi:waypoint>\n        <omgdi:waypoint x="213.0" y="290.0"></omgdi:waypoint>\n        <omgdi:waypoint x="213.0" y="240.0"></omgdi:waypoint>\n        <omgdi:waypoint x="330.0" y="240.0"></omgdi:waypoint>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</definitions>',
+  //   appSn: null,
+  //   categoryCode: null
+  // }
+  // bpmnData.value = json
+  // console.log('bpmnData', bpmnData.value)
+  // getWorkFlowById()
 }
 
 const props = defineProps({
@@ -118,8 +119,6 @@ const cmOptions = ref({
 })
 const refFile = ref(null)
 
-getBpmnByModelId()
-
 const init = () => {
   if (bpmnModeler.value) return
   bpmnModeler.value = new BpmnModeler({
@@ -131,8 +130,13 @@ const init = () => {
 
 const createNewDiagram = async xml => {
   // 将字符串转换成图显示出来
-  let newId = props.processId || `Process_${new Date().getTime()}`
-  let newName = props.processName || `业务流程_${new Date().getTime()}`
+  // let newId = props.processId || `Process_${new Date().getTime()}`
+  // let newName = props.processName || `业务流程_${new Date().getTime()}`
+  let newId = bpmnData.value.name || `Process_${new Date().getTime()}`
+  let newName = bpmnData.value.code || `业务流程_${new Date().getTime()}`
+  if (!isNaN(Number(newId))) {
+    newId = `a${newId}`
+  }
   // 缺默认xml
   let xmlString = xml || DefaultEmptyXML(newId, newName, props.prefix)
   try {
@@ -145,9 +149,12 @@ const createNewDiagram = async xml => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await getWorkFlow(route.params.id).then(res => {
+    bpmnData.value = res.data[0]
+  })
   init()
-  createNewDiagram(bpmnData.value.modelXml)
+  createNewDiagram(bpmnData.value.xmlFile)
 })
 
 // 下载流程图到本地
@@ -282,14 +289,22 @@ const processRestart = () => {
   createNewDiagram(null)
 }
 
+const getWorkFlowById = () => {
+  getWorkFlow(route.params.id).then(res => {
+    bpmnData.value = res.data[0]
+  })
+}
+
 const workFlow = ref({})
 const saveXML = () => {
-  getWorkFlow(route.params.id).then(res => {
-    workFlow.value = res.data
-  })
-  bpmnModeler.value.saveXML({ format: false }).then(({ xml }) => {
-    workFlow.value.xmlFile = xml
-    updateWorkFlow(workFlow.value)
+  getWorkFlowById()
+  bpmnModeler.value.saveXML({ format: false }).then(async ({ xml }) => {
+    bpmnData.value.xmlFile = xml
+    await updateWorkFlow(bpmnData.value)
+    ElMessage({
+      message: '保存成功',
+      type: 'success'
+    })
   })
 }
 </script>
@@ -300,10 +315,10 @@ const saveXML = () => {
     <div class="w-full min-h-9 flex items-center">
       <slot name="control-header"></slot>
       <template v-if="!$slots['control-header']">
-        <el-button :size="headerButtonSize" :type="headerButtonType" @click="saveXML">
-          <i-ep-folder-opened />保存
-        </el-button>
         <el-button-group key="file-control" class="m-1">
+          <el-button :size="headerButtonSize" :type="headerButtonType" @click="saveXML">
+            <i-ep-folder-opened />保存
+          </el-button>
           <el-button :size="headerButtonSize" :type="headerButtonType" @click="refFile.click()">
             <i-ep-folder-opened />打开文件
           </el-button>

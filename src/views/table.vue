@@ -34,13 +34,18 @@ const deleteClick = id => {
   })
 }
 
+const workFlowId = ref()
 const confirmClick = async () => {
   if (title.value == '添加') {
-    await addWorkFlow(workFlow.value)
+    await addWorkFlow(workFlow.value).then(res => {
+      workFlowId.value = res.data.id
+    })
   } else {
-    await updateWorkFlow(workFlow.value)
+    await updateWorkFlow(workFlow.value).then(res => {
+      workFlowId.value = res.data.id
+    })
   }
-  router.push(`/bpmn/designer/123`)
+  router.push(`/bpmn/designer/${workFlowId.value}`)
 }
 
 const workFlow = ref({})
